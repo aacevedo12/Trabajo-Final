@@ -1,0 +1,46 @@
+# ESTO VA DESPUES DE LA FUNCION DEL DASHBOARD
+@app.route('/patient', methods=["GET", "POST"])
+def patient_form():
+    return render_template('patient.html')
+
+@app.route('/patient/search', methods=["GET", "POST"])
+def search_patient():
+    if request.method == 'POST':
+        try:
+            name_last_name = request.form['name_last_name']
+            name, last_name = name_last_name.split()
+
+            with sql.connect('db_clinica') as con:
+                cur = con.cursor()
+                review = cur.execute('SELECT * FROM PATIENT WHERE NAME = ? AND LAST_NAME = ?', (name,last_name)).fetchone()
+                if review:
+                    return render_template('patient.html', review=review)
+                else:
+                    return render_template('patient.html', error='paciente no encontrado')
+        except Exception as e:
+            return render_template('patient.html', error=str(e))
+    return render_template('patient.html')
+
+
+@app.route('/patient/add', methods=["GET", "POST"])
+def add_patient():
+    if request.method == 'POST':
+        try:
+            name = request.form['name']
+            last_name = request.form['last_name']
+            id_pat = request.form['id_pat']
+            birthdate = request.form['birthdate']
+            address = request.form['address']
+
+            with sql.connect('db_clinica') as con:
+                cur = con.cursor()
+                review = cur.execute('SELECT * FROM PATIENT WHERE ID_PAT = ?', (id_pat,)).fetchone()
+                if review:
+                    return render_template('add_patient.html', error='registrado anteriormente')
+                else:
+                    insert = cur.execute('INSERT INTO PATIENT (name, last_name, id_pat, birthdate, address) VALUES (?, ?, ?, ?, ?)', (name, last_name, id_pat, birthdate, address))
+                    con.commit()
+                    return render_template('patient.html', msg='paciente registrado con exito')
+        except Exception as e:
+            return str(e)
+    return render_template('add_patient.html') 

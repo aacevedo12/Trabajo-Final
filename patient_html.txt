@@ -1,0 +1,42 @@
+<!--de nombre pongan patient.html-->
+<!--recuerden que solo son html de prueba :)-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Búsqueda y Agregar de Paciente</title>
+</head>
+<body>
+    <h1>Búsqueda y Agregar de Paciente</h1>
+<form method="post" action="/patient/search">
+    <label for="name_last_name">Nombre:</label>
+    <input type="text" id="name_last_name" name="name_last_name" required>
+    <button type="submit">Buscar Paciente</button>
+</form>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <br>
+
+    <form method="get" action="/patient/add">
+        <button type="submit">Agregar Paciente</button>
+    </form>
+
+{% if review %}
+    <h2>Resultado de la búsqueda:</h2>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>ID</th>
+            <th>Fecha de nacimiento</th>
+            <th>Direccion</th>
+        </tr>
+        <tr>
+            <td colspan="3">{{ review[1] }} {{ review[2] }} {{ review[0] }} {{ review[3] }} {{review[4] }}</td>
+        </tr>
+    </table>
+{% endif %}
+
+</body>
+</html>
